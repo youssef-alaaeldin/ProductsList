@@ -14,15 +14,21 @@ extension Container {
     
     
     // MARK: - Remote Data Source
+    
     var productsRemoteDS: Factory<ProductsRemoteDataSourceProtocol> {
         Factory(self) { ProductsRemoteDataSource() }
     }
     
     // MARK: - Repository
+    
     var productsRepository: Factory<ProductsRepositoryProtocol> {
         Factory(self) { ProductsRepository() }
     }
     
     
     // MARK: - Use Case
+    
+    var getProductsUseCase: Factory<GetProductsUseCaseProtocol> {
+        Factory(self) { GetProductsUseCase() }
+    }
 }

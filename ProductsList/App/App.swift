@@ -18,8 +18,8 @@ class App {
     func start() {
         let rootNavigationController = UINavigationController()
         self.window.rootViewController = rootNavigationController
-        let viewController = ViewController()
-        rootNavigationController.setViewControllers([viewController], animated: true)
+        let productsViewController = ProductsViewController()
+        rootNavigationController.setViewControllers([productsViewController], animated: true)
         window.makeKeyAndVisible()
     }
 }
