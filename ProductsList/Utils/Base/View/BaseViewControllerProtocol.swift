@@ -11,5 +11,4 @@ protocol BaseViewControllerProtocol: AnyObject {
     func showLoading()
     func hideLoading()
     func showError(message: String)
-    func handleRefresh()
 }

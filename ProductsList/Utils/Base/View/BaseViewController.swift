@@ -9,7 +9,6 @@ import UIKit
 import Combine
 
 class BaseViewController: UIViewController, BaseViewControllerProtocol {
-    
     // MARK: - UI Elements
     let loadingIndicator = UIActivityIndicatorView(style: .large)
     
