@@ -12,6 +12,20 @@ extension Container {
     
     // MARK: - Router
     
+    var productsRouter: ParameterFactory<UINavigationController, ProductsRouterProtocol> {
+        ParameterFactory(self) { navController in
+            ProductsRouter(navigationController: navController)
+        }
+    }
+    
+    static func productsServiceDI(navigationController: UINavigationController) -> ProductsViewController {
+        let router = self.shared.productsRouter.resolve(navigationController)
+        let viewModel = ProductsViewModel(router: router)
+        
+        let viewController = ProductsViewController(viewModel: viewModel)
+        
+        return viewController
+    }
     
     // MARK: - Remote Data Source
     

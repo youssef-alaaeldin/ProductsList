@@ -11,6 +11,12 @@ import Factory
 
 class ProductsViewModel: BaseVM {
     @Injected(\.getProductsUseCase) var getProductsUseCase
+    
+    private var router: ProductsRouterProtocol
+    
+    init(router: ProductsRouterProtocol) {
+        self.router = router
+    }
 }
 
 

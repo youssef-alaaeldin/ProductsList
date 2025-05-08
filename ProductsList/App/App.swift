@@ -5,8 +5,8 @@
 //  Created by Yousuf Abdelfattah on 08/05/2025.
 //
 
-import Foundation
 import UIKit
+import Factory
 
 class App {
     private var window: UIWindow
@@ -18,7 +18,7 @@ class App {
     func start() {
         let rootNavigationController = UINavigationController()
         self.window.rootViewController = rootNavigationController
-        let productsViewController = ProductsViewController()
+        let productsViewController = Container.productsServiceDI(navigationController: rootNavigationController)
         rootNavigationController.setViewControllers([productsViewController], animated: true)
         window.makeKeyAndVisible()
     }
