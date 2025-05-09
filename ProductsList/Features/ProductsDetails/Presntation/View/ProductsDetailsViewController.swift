@@ -6,8 +6,15 @@
 //
 
 import UIKit
+import SDWebImage
 
 class ProductsDetailsViewController: BaseViewController {
+    
+    @IBOutlet weak var productImageView: UIImageView!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var priceLabel: UILabel!
+    @IBOutlet weak var ratingLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
     
     private var viewModel: ProductsDetailsViewModel
     
@@ -21,7 +28,17 @@ class ProductsDetailsViewController: BaseViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(viewModel.product.title)
+        setupUI()
     }
-
+    
+    private func setupUI() {
+        let product = viewModel.product
+        
+        titleLabel.text = product.title
+        priceLabel.text = "$\(product.price)"
+        ratingLabel.text = "⭐️ \(product.rating.rate) (\(product.rating.count) reviews)"
+        descriptionLabel.text = product.description
+        
+        productImageView.sd_setImage(with: URL(string: product.image), placeholderImage: UIImage(systemName: "photo"))
+    }
 }

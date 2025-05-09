@@ -8,8 +8,11 @@
 import Foundation
 
 // MARK: Domain Model
+
 struct Product {
     let title: String
     let price: Double
+    let description: String
     let image: String
+    let rating: Rating
 }

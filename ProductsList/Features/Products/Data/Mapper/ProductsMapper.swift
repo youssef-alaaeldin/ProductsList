@@ -13,7 +13,9 @@ struct ProductsMapper: RemoteMapperProtocol {
         return Product(
             title: model.title,
             price: model.price,
-            image: model.image
+            description: model.description,
+            image: model.image,
+            rating: model.rating
         )
     }
 }
