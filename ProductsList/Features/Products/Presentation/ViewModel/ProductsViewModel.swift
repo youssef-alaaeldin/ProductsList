@@ -108,6 +108,6 @@ extension ProductsViewModel: ProductsDataSourceDelegation {
     }
     
     func didSelect(indexPath: Int) {
-        
+        router.navigateToDetails(product: products[indexPath])
     }
 }

@@ -27,6 +27,10 @@ extension ProductDataSource: UICollectionViewDelegate {
         source?.numberOfItems ?? 0
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        source?.didSelect(indexPath: indexPath.row)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height

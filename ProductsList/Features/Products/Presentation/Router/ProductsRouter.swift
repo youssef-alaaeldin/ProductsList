@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import Factory
 
 protocol ProductsRouterProtocol: RouterProtocol {
-    func navigateToDetails()
+    func navigateToDetails(product: Product)
 }
 
 class ProductsRouter: ProductsRouterProtocol {
@@ -18,7 +19,10 @@ class ProductsRouter: ProductsRouterProtocol {
         self.navigationController = navigationController
     }
     
-    func navigateToDetails() {
-        // TODO: Navigate to product details
+    func navigateToDetails(product: Product) {
+        let productDetailsVC = Container.productsDetailsServiceDI(navigationController: navigationController, product: product)
+        print("In")
+        navigationController.pushViewController(productDetailsVC, animated: true)
+
     }
 }
