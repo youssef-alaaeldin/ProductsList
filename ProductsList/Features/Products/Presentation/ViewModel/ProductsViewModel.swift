@@ -17,13 +17,20 @@ class ProductsViewModel: BaseVM {
     private var router: ProductsRouterProtocol
     var dataSourceInjection: (() -> Void)?
     
+    // Pagination states
+    private var currentLimit = 7
+    private let pageSize = 7
+    private let maxItems = 20
+    private var isLoadingMore = false
+    private var isAllItemsLoaded = false
+    
     init(router: ProductsRouterProtocol) {
         self.router = router
     }
     
     func viewWillAppear() {
         dataSourceInjection?()
-        getProducts()
+        getProducts(reset: true)
     }
 }
 
@@ -31,25 +38,48 @@ class ProductsViewModel: BaseVM {
 // MARK: API Calls
 
 extension ProductsViewModel {
-    func getProducts() {
+    func getProducts(reset: Bool = false) {
+        if reset {
+            currentLimit = pageSize
+            isAllItemsLoaded = false
+        }
+        
+        guard !isAllItemsLoaded else { return }
+        
         isLoading = true
-        let request = ProductsRequest(limit: 7)
+        let request = ProductsRequest(limit: min(currentLimit, maxItems))
         
         getProductsUseCase.execute(productsRequest: request) { [weak self] result in
             guard let self = self else { return }
             switch result {
                 case .success(let products):
-                    onSuccess(products: products)
+                    self.onSuccess(products: products, isReset: reset)
                 case .failure(let error):
                     self.onFailure(error.localizedDescription)
             }
         }
-        
     }
     
-    private func onSuccess(products: [Product]) {
-        self.products = products
+    private func onSuccess(products: [Product], isReset: Bool) {
+        if isReset {
+            self.products = products
+        } else {
+            let newProducts = products.suffix(pageSize)
+            self.products.append(contentsOf: newProducts)
+        }
         isLoading = false
+        isLoadingMore = false
+        
+        if self.products.count >= maxItems || products.count < currentLimit {
+            isAllItemsLoaded = true
+        }
+    }
+    
+    func loadMoreProducts() {
+        guard !isLoading && !isLoadingMore && !isAllItemsLoaded else { return }
+        isLoadingMore = true
+        currentLimit = min(currentLimit + pageSize, maxItems)
+        getProducts(reset: false)
     }
 }
 
@@ -71,6 +101,10 @@ extension ProductsViewModel: ProductsDataSourceDelegation {
         }
         let product = products[indexPath]
         return ProductCellModel.mapProductToCellModel(product)
+    }
+    
+    func loadMoreItemsIfNeeded() {
+        loadMoreProducts()
     }
     
     func didSelect(indexPath: Int) {

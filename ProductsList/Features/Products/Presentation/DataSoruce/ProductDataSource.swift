@@ -26,6 +26,20 @@ extension ProductDataSource: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         source?.numberOfItems ?? 0
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let frameHeight = scrollView.frame.size.height
+        
+        let threshold: CGFloat = 100
+        
+        let isNearBottom = offsetY + frameHeight >= contentHeight - threshold
+        
+        if isNearBottom {
+            source?.loadMoreItemsIfNeeded()
+        }
+    }
 }
 
 extension ProductDataSource: UICollectionViewDataSource {

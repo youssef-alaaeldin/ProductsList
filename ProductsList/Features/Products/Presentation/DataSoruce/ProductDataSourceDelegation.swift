@@ -12,4 +12,5 @@ protocol ProductsDataSourceDelegation: AnyObject {
     var numberOfItems: Int { get }
     func model(for indexPath: Int) -> ProductCellModel
     func didSelect(indexPath: Int)
+    func loadMoreItemsIfNeeded()
 }

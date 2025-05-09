@@ -50,7 +50,7 @@ class ProductsViewController: BaseViewController {
 extension  ProductsViewController {
     // MARK: Collection View Setup
     private func configureCollectionView() {
-        collectionView.register(UINib(nibName: "ProductCell", bundle: nil), forCellWithReuseIdentifier: ProductCell.identifier)
+        collectionView.register(UINib(nibName: ProductCell.identifier, bundle: nil), forCellWithReuseIdentifier: ProductCell.identifier)
         collectionView.collectionViewLayout = createLayout(isGrid: false)
     }
     
