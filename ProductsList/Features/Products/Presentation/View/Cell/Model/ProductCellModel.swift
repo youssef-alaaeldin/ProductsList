@@ -12,3 +12,13 @@ struct ProductCellModel {
     var image: String
     var price: String
 }
+
+extension ProductCellModel {
+    static func mapProductToCellModel(_ product: Product) -> ProductCellModel {
+        return ProductCellModel(
+            title: product.title,
+            image: product.image,
+            price: "$\(product.price)"
+        )
+    }
+}

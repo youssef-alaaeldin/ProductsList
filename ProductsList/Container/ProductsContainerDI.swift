@@ -22,10 +22,19 @@ extension Container {
         let router = self.shared.productsRouter.resolve(navigationController)
         let viewModel = ProductsViewModel(router: router)
         
+        let dataSourceHandler = ProductDataSource(source: viewModel)
+        
+        
         let viewController = ProductsViewController(viewModel: viewModel)
         
+        viewModel.dataSourceInjection = { [weak viewController] in
+            viewController?.collectionView.delegate = dataSourceHandler
+            viewController?.collectionView.dataSource = dataSourceHandler
+        }
         return viewController
     }
+    
+    
     
     // MARK: - Remote Data Source
     

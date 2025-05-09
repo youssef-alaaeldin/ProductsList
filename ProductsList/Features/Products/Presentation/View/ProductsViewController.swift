@@ -37,26 +37,23 @@ class ProductsViewController: BaseViewController {
         navigationItem.titleView = layoutToggleControl
         configureCollectionView()
         bindViewModel()
-        viewModel.getProducts()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.viewWillAppear()
+    }
+}
+
+// MARK: - Setup UI
+
+extension  ProductsViewController {
     // MARK: Collection View Setup
     private func configureCollectionView() {
-        collectionView.dataSource = self
-        collectionView.delegate = self
         collectionView.register(UINib(nibName: "ProductCell", bundle: nil), forCellWithReuseIdentifier: ProductCell.identifier)
         collectionView.collectionViewLayout = createLayout(isGrid: false)
     }
     
-    // MARK: ViewModel Binding
-    private func bindViewModel() {
-        viewModel.$products
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] products in
-                self?.collectionView.reloadData()
-            }
-            .store(in: &cancellables)
-    }
     
     // MARK: Layout Toggle
     @objc private func toggleLayout() {
@@ -85,19 +82,25 @@ class ProductsViewController: BaseViewController {
     }
 }
 
-// MARK: - CollectionView DataSource + Delegate
+// MARK: - ViewModel Binding
 
-extension ProductsViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension ProductsViewController {
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.products.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCell.identifier, for: indexPath) as? ProductCell else {
-            return UICollectionViewCell()
-        }
-        let product = viewModel.products[indexPath.item]
-        return cell
+    private func bindViewModel() {
+        viewModel.isLoadingPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isLoading in
+                guard let self = self else { return }
+                isLoading ? self.showLoading() : self.hideLoading()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$products
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] products in
+                guard let self = self else { return }
+                self.collectionView.reloadData()
+            }
+            .store(in: &cancellables)
     }
 }

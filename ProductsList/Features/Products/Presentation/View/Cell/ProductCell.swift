@@ -27,7 +27,7 @@ class ProductCell: UICollectionViewCell {
     
     func configure(with product: ProductCellModel, isGrid: Bool) {
         titleLabel.text = product.title
-        priceLabel.text = "$\(product.price)"
+        priceLabel.text = product.price
         
         productImageView.sd_setImage(with: URL(string: product.image), placeholderImage: UIImage(systemName: "photo"))
         
