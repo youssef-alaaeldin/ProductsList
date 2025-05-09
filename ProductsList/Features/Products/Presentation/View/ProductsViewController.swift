@@ -87,6 +87,15 @@ extension  ProductsViewController {
 extension ProductsViewController {
     
     private func bindViewModel() {
+        viewModel.errorMessagePublisher
+            .filter { !$0.isEmpty }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] error in
+                guard let self = self else { return }
+                self.showError(message: error)
+            }
+            .store(in: &cancellables)
+        
         viewModel.isLoadingPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isLoading in
