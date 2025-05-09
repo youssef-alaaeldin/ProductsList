@@ -98,7 +98,6 @@ extension ProductsViewController: UICollectionViewDataSource, UICollectionViewDe
             return UICollectionViewCell()
         }
         let product = viewModel.products[indexPath.item]
-        cell.configure(with: product, isGrid: isGridLayout)
         return cell
     }
 }

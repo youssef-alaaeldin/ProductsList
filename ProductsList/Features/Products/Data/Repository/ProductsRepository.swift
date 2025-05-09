@@ -13,11 +13,14 @@ class ProductsRepository: ProductsRepositoryProtocol {
     
     var productsTask: Task<Void, Never>?
     
-    func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<Products, any Error>) -> Void) {
+    func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<[Product], any Error>) -> Void) {
+        let mapper = ProductsMapper()
+        
         productsRemoteDS.getProducts(productsRequest: productsRequest) { result in
             switch result {
-                case .success(let products):
-                    completion(.success(products))
+                case .success(let productResponse):
+                    let productDomain = mapper.dtoToDomain(productResponse)
+                    completion(.success(productDomain))
                 case .failure(let error):
                     completion(.failure(error))
             }

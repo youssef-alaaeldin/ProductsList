@@ -13,10 +13,10 @@ class ProductsRemoteDataSource: ProductsRemoteDataSourceProtocol {
     
     var productsTask: Task<Void, Never>?
     
-    func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<Products, any Error>) -> Void) {
+    func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<[ProductResponse], any Error>) -> Void) {
         productsTask = Task {
             do {
-                let result = try await networkProvider.get(endpoint: productsRequest, responseType: Products.self)
+                let result = try await networkProvider.get(endpoint: productsRequest, responseType: [ProductResponse].self)
                 
                 completion(.success(result))
             } catch {

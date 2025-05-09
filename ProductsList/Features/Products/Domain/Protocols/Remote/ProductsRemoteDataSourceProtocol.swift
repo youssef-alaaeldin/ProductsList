@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ProductsRemoteDataSourceProtocol {
-    func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<Products, Error>) -> Void)
+    func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<[ProductResponse], Error>) -> Void)
 }

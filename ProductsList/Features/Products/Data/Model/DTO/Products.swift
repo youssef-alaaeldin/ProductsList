@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Product
-struct Product: Codable {
+struct ProductResponse: Codable {
     let id: Int
     let title: String
     let price: Double
@@ -22,5 +22,3 @@ struct Rating: Codable {
     let rate: Double
     let count: Int
 }
-
-typealias Products = [Product]
