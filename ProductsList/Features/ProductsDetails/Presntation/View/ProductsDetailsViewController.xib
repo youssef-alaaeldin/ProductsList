@@ -12,9 +12,11 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductsDetailsViewController" customModule="ProductsList" customModuleProvider="target">
             <connections>
                 <outlet property="descriptionLabel" destination="4Qc-ov-D3v" id="Ta9-MD-pRW"/>
+                <outlet property="imageHeightAnchor" destination="3WU-lJ-SZc" id="vbt-fM-Poa"/>
                 <outlet property="priceLabel" destination="Jtz-Zk-f80" id="hNk-Ww-3NL"/>
                 <outlet property="productImageView" destination="v7B-iy-DFB" id="CUn-Fk-pr2"/>
                 <outlet property="ratingLabel" destination="DFW-Kl-etZ" id="yVE-5u-fCs"/>
+                <outlet property="scrollView" destination="qWu-3d-XpK" id="FoI-uh-J09"/>
                 <outlet property="titleLabel" destination="0ub-Pa-V89" id="HWC-a1-e6G"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>

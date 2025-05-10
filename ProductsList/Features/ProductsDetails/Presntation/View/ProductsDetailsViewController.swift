@@ -10,6 +10,8 @@ import SDWebImage
 
 class ProductsDetailsViewController: BaseViewController {
     
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var imageHeightAnchor: NSLayoutConstraint!
     @IBOutlet weak var productImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var priceLabel: UILabel!
@@ -29,8 +31,13 @@ class ProductsDetailsViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        scrollView.delegate = self
     }
-    
+}
+
+// MARK: - Setup UI
+
+extension ProductsDetailsViewController {
     private func setupUI() {
         let product = viewModel.product
         
@@ -40,5 +47,19 @@ class ProductsDetailsViewController: BaseViewController {
         descriptionLabel.text = product.description
         
         productImageView.sd_setImage(with: URL(string: product.image), placeholderImage: UIImage(systemName: "photo"))
+    }
+}
+
+// MARK: - Stretch header
+
+extension ProductsDetailsViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let y = scrollView.contentOffset.y
+
+        if y < 0 {
+            imageHeightAnchor.constant = 250 - y
+        } else {
+            imageHeightAnchor.constant = 250
+        }
     }
 }
