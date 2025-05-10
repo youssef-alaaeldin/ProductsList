@@ -9,7 +9,7 @@ import Foundation
 import Factory
 
 class GetProductsUseCase: GetProductsUseCaseProtocol {
-    @Injected(\.productsRepository) private var productsRepository
+    @Injected(\.productsRepository) var productsRepository
     
     func execute(productsRequest: ProductsRequest, completion: @escaping (Result<([Product], Bool), any Error>) -> Void) {
         productsRepository.getProducts(productsRequest: productsRequest) { result in
