@@ -9,4 +9,5 @@ import Foundation
 
 class AppConstants {
     static let mainURL = "https://fakestoreapi.com"
+    static let coreDataContainer = "ProductsList"
 }
