@@ -21,7 +21,6 @@ class ProductsRouter: ProductsRouterProtocol {
     
     func navigateToDetails(product: Product) {
         let productDetailsVC = Container.productsDetailsServiceDI(navigationController: navigationController, product: product)
-        print("In")
         navigationController.pushViewController(productDetailsVC, animated: true)
 
     }

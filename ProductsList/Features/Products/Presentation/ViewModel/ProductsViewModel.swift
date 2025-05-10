@@ -20,10 +20,8 @@ class ProductsViewModel: BaseVM {
     var dataSourceInjection: (() -> Void)?
     
     // MARK: Pagination states
-    private var currentLimit = 7
-    private let pageSize = 7
-    private let maxItems = 20
-    private var isLoadingMore = false
+    private var currentLimit = PaginationConstants.pageSize
+    private var isPaginating = false
     private var isAllItemsLoaded = false
 
     // MARK: - Init
@@ -50,7 +48,7 @@ private extension ProductsViewModel {
         guard !isAllItemsLoaded else { return }
 
         isLoading = true
-        let request = ProductsRequest(limit: min(currentLimit, maxItems))
+        let request = ProductsRequest(limit: min(currentLimit, PaginationConstants.maxItems))
 
         getProductsUseCase.execute(productsRequest: request) { [weak self] result in
             guard let self = self else { return }
@@ -68,19 +66,19 @@ private extension ProductsViewModel {
         if isReset {
             self.products = products
         } else {
-            let newProducts = products.suffix(pageSize)
+            let newProducts = products.suffix(PaginationConstants.pageSize)
             self.products.append(contentsOf: newProducts)
         }
 
         isLoading = false
-        isLoadingMore = false
+        isPaginating = false
 
         if isFromCache {
             isAllItemsLoaded = true
             errorMessage = "You're viewing cached data. Internet connection failed."
         }
 
-        if products.count < currentLimit || self.products.count >= maxItems {
+        if products.count < currentLimit || self.products.count >= PaginationConstants.maxItems {
             isAllItemsLoaded = true
         }
     }
@@ -88,7 +86,7 @@ private extension ProductsViewModel {
     func handleFailure(message: String) {
         errorMessage = message
         isLoading = false
-        isLoadingMore = false
+        isPaginating = false
     }
 }
 
@@ -97,20 +95,20 @@ private extension ProductsViewModel {
 private extension ProductsViewModel {
 
     func resetPagination() {
-        currentLimit = pageSize
+        currentLimit = PaginationConstants.pageSize
         isAllItemsLoaded = false
     }
 
     func loadMoreProducts() {
         guard canLoadMore else { return }
 
-        isLoadingMore = true
-        currentLimit = min(currentLimit + pageSize, maxItems)
+        isPaginating = true
+        currentLimit = min(currentLimit + PaginationConstants.pageSize, PaginationConstants.maxItems)
         getProducts(reset: false)
     }
 
     var canLoadMore: Bool {
-        return !isLoading && !isLoadingMore && !isAllItemsLoaded
+        return !isLoading && !isPaginating && !isAllItemsLoaded
     }
 }
 
@@ -134,5 +132,14 @@ extension ProductsViewModel: ProductsDataSourceDelegation {
 
     func didSelect(indexPath: Int) {
         router.navigateToDetails(product: products[indexPath])
+    }
+}
+
+// MARK: - Constants
+
+private extension ProductsViewModel {
+    enum PaginationConstants {
+        static let pageSize: Int = 7
+        static let maxItems: Int = 20
     }
 }
