@@ -14,6 +14,11 @@ Users can toggle between **List View** and **Grid View**, browse details of prod
 - Handles network failures gracefully and loads cached data if available
 
 ---
+| ![1](Media/product1.png) | ![2](Media/product2.png) | ![3](Media/product3.png) |
+| --- | --- | --- |
+| ![4](Media/product4.png) |
+
+---
 
 ## 🛠️ Technologies Used
 
