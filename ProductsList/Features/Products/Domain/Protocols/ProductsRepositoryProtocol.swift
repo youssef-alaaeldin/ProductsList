@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ProductsRepositoryProtocol {
-    func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<[Product], Error>) -> Void)
+    func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<([Product], Bool), any Error>) -> Void)
 }

@@ -11,14 +11,9 @@ import Factory
 class GetProductsUseCase: GetProductsUseCaseProtocol {
     @Injected(\.productsRepository) private var productsRepository
     
-    func execute(productsRequest: ProductsRequest, completion: @escaping (Result<[Product], any Error>) -> Void) {
+    func execute(productsRequest: ProductsRequest, completion: @escaping (Result<([Product], Bool), any Error>) -> Void) {
         productsRepository.getProducts(productsRequest: productsRequest) { result in
-            switch result {
-                case .success(let products):
-                    completion(.success(products))
-                case .failure(let error):
-                    completion(.failure(error))
-            }
+            completion(result)
         }
     }
 }

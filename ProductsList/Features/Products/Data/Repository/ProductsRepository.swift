@@ -15,7 +15,7 @@ class ProductsRepository: ProductsRepositoryProtocol {
     var productsTask: Task<Void, Never>?
     let mapper = ProductsMapper()
     
-    func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<[Product], any Error>) -> Void) {
+    func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<([Product], Bool), any Error>) -> Void) {
         
         productsRemoteDS.getProducts(productsRequest: productsRequest) { [weak self]  result in
             guard let self = self else { return }
@@ -23,11 +23,12 @@ class ProductsRepository: ProductsRepositoryProtocol {
                 case .success(let productResponse):
                     let productDomain = self.mapper.dtoToDomain(productResponse)
                     self.productsLocalDS.saveProducts(productDomain)
-                    completion(.success(productDomain))
+                    completion(.success((productDomain, false))) // from API
+                    
                 case .failure(let error):
                     let cachedProducts = self.productsLocalDS.fetchProducts()
                     if !cachedProducts.isEmpty {
-                        completion(.success(cachedProducts))
+                        completion(.success((cachedProducts, true))) // from cache
                     } else {
                         completion(.failure(error))
                     }

@@ -9,6 +9,8 @@ import Foundation
 import Combine
 import Factory
 
+// MARK: - ProductsViewModel
+
 class ProductsViewModel: BaseVM {
     @Injected(\.getProductsUseCase) var getProductsUseCase
     
@@ -17,96 +19,119 @@ class ProductsViewModel: BaseVM {
     private var router: ProductsRouterProtocol
     var dataSourceInjection: (() -> Void)?
     
-    // Pagination states
+    // MARK: Pagination states
     private var currentLimit = 7
     private let pageSize = 7
     private let maxItems = 20
     private var isLoadingMore = false
     private var isAllItemsLoaded = false
-    
+
+    // MARK: - Init
     init(router: ProductsRouterProtocol) {
         self.router = router
     }
-    
+}
+
+// MARK: - Public Methods
+
+extension ProductsViewModel {
     func viewWillAppear() {
         dataSourceInjection?()
         getProducts(reset: true)
     }
 }
 
+// MARK: - API
 
-// MARK: API Calls
-
-extension ProductsViewModel {
+private extension ProductsViewModel {
+    
     func getProducts(reset: Bool = false) {
-        if reset {
-            currentLimit = pageSize
-            isAllItemsLoaded = false
-        }
-        
+        if reset { resetPagination() }
         guard !isAllItemsLoaded else { return }
-        
+
         isLoading = true
         let request = ProductsRequest(limit: min(currentLimit, maxItems))
-        
+
         getProductsUseCase.execute(productsRequest: request) { [weak self] result in
             guard let self = self else { return }
             switch result {
-                case .success(let products):
-                    self.onSuccess(products: products, isReset: reset)
+                case .success(let (products, isFromCache)):
+                    self.handleSuccess(products: products, isReset: reset, isFromCache: isFromCache)
+
                 case .failure:
-                    self.onFailure("Something went wrong.")
+                    self.handleFailure(message: "Failed to load products. No cached data available.")
             }
         }
     }
-    
-    private func onSuccess(products: [Product], isReset: Bool) {
+
+    func handleSuccess(products: [Product], isReset: Bool, isFromCache: Bool) {
         if isReset {
             self.products = products
         } else {
             let newProducts = products.suffix(pageSize)
             self.products.append(contentsOf: newProducts)
         }
+
         isLoading = false
         isLoadingMore = false
-        
-        if self.products.count >= maxItems || products.count < currentLimit {
+
+        if isFromCache {
+            isAllItemsLoaded = true
+            errorMessage = "You're viewing cached data. Internet connection failed."
+        }
+
+        if products.count < currentLimit || self.products.count >= maxItems {
             isAllItemsLoaded = true
         }
     }
-    
+
+    func handleFailure(message: String) {
+        errorMessage = message
+        isLoading = false
+        isLoadingMore = false
+    }
+}
+
+// MARK: - Pagination
+
+private extension ProductsViewModel {
+
+    func resetPagination() {
+        currentLimit = pageSize
+        isAllItemsLoaded = false
+    }
+
     func loadMoreProducts() {
-        guard !isLoading && !isLoadingMore && !isAllItemsLoaded else { return }
+        guard canLoadMore else { return }
+
         isLoadingMore = true
         currentLimit = min(currentLimit + pageSize, maxItems)
         getProducts(reset: false)
     }
-}
 
+    var canLoadMore: Bool {
+        return !isLoading && !isLoadingMore && !isAllItemsLoaded
+    }
+}
 
 // MARK: - Data Source Delegation
 
 extension ProductsViewModel: ProductsDataSourceDelegation {
-    var numOfSections: Int {
-        1
-    }
-    
-    var numberOfItems: Int {
-        products.count
-    }
-    
+    var numOfSections: Int { 1 }
+
+    var numberOfItems: Int { products.count }
+
     func model(for indexPath: Int) -> ProductCellModel {
         guard indexPath >= 0 && indexPath < products.count else {
             fatalError("IndexPath out of bounds in ProductsViewModel.model(for:)")
         }
-        let product = products[indexPath]
-        return ProductCellModel.mapProductToCellModel(product)
+        return ProductCellModel.mapProductToCellModel(products[indexPath])
     }
-    
+
     func loadMoreItemsIfNeeded() {
         loadMoreProducts()
     }
-    
+
     func didSelect(indexPath: Int) {
         router.navigateToDetails(product: products[indexPath])
     }

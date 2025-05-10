@@ -8,5 +8,5 @@
 import Foundation
 
 protocol GetProductsUseCaseProtocol {
-    func execute(productsRequest: ProductsRequest, completion: @escaping (Result<[Product], Error>) -> Void)
+    func execute(productsRequest: ProductsRequest, completion: @escaping (Result<([Product], Bool), any Error>) -> Void)
 }
