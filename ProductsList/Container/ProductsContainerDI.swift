@@ -42,6 +42,12 @@ extension Container {
         Factory(self) { ProductsRemoteDataSource() }
     }
     
+    // MARK: - Local Data Soruce
+    
+    var productsLocalDS: Factory<ProductsLocalDataSourceProtocol> {
+        Factory(self) { ProductsLocalDataSource() }
+    }
+    
     // MARK: - Repository
     
     var productsRepository: Factory<ProductsRepositoryProtocol> {

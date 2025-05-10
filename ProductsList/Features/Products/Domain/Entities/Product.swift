@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: Domain Model
 
-struct Product {
+struct Product: Codable {
     let title: String
     let price: Double
     let description: String

@@ -10,20 +10,29 @@ import Factory
 
 class ProductsRepository: ProductsRepositoryProtocol {
     @Injected(\.productsRemoteDS) private var productsRemoteDS
+    @Injected(\.productsLocalDS) private var productsLocalDS
     
     var productsTask: Task<Void, Never>?
+    let mapper = ProductsMapper()
     
     func getProducts(productsRequest: ProductsRequest, completion: @escaping (Result<[Product], any Error>) -> Void) {
-        let mapper = ProductsMapper()
         
-        productsRemoteDS.getProducts(productsRequest: productsRequest) { result in
+        productsRemoteDS.getProducts(productsRequest: productsRequest) { [weak self]  result in
+            guard let self = self else { return }
             switch result {
                 case .success(let productResponse):
-                    let productDomain = mapper.dtoToDomain(productResponse)
+                    let productDomain = self.mapper.dtoToDomain(productResponse)
+                    self.productsLocalDS.saveProducts(productDomain)
                     completion(.success(productDomain))
                 case .failure(let error):
-                    completion(.failure(error))
+                    let cachedProducts = self.productsLocalDS.fetchProducts()
+                    if !cachedProducts.isEmpty {
+                        completion(.success(cachedProducts))
+                    } else {
+                        completion(.failure(error))
+                    }
             }
         }
     }
+    
 }

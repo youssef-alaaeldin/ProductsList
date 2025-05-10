@@ -41,9 +41,9 @@ class ProductsViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        viewModel.viewWillAppear()
-        
+        if isMovingToParent {
+            viewModel.viewWillAppear()
+        }
     }
 }
 

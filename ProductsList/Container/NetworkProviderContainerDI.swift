@@ -10,6 +10,6 @@ import Factory
 
 extension Container {
     var networkProvider: Factory<NetworkProviderProtocol> {
-        Factory(self) { NetworkProvider() }
+        Factory(self) { NetworkProvider() }.singleton
     }
 }

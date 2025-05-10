@@ -54,8 +54,8 @@ extension ProductsViewModel {
             switch result {
                 case .success(let products):
                     self.onSuccess(products: products, isReset: reset)
-                case .failure(let error):
-                    self.onFailure(error.localizedDescription)
+                case .failure:
+                    self.onFailure("Something went wrong.")
             }
         }
     }
