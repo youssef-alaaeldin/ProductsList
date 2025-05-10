@@ -40,7 +40,7 @@ The project follows a **Clean Code** architecture using **MVVM (Model-View-ViewM
 
 - **Model-View-ViewModel (MVVM)** handles UI state management and business logic separation.
 - **Router pattern** cleanly manages navigation, decoupling routing logic from view controllers.
-- **Repository pattern** abstracts data sources (remote API + local database) and provides a clean interface to the UseCases.
+- **Clean Architecture** separates UI, domain, and data layers with clear responsibilities and inward dependencies for maintainability and testability.
 
 Dependency Injection is handled using the **Factory** library to ensure loose coupling between components and promote reusability and testability.
 
